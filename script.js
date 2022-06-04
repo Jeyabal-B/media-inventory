@@ -2,6 +2,15 @@ const movieSearchBox = document.getElementById('movie-search-box')
 const searchList = document.getElementById('search-list')
 const resultGrid = document.getElementById('result-grid')
 
+async function loadMovies(searchTerm){
+    const URL = `https://omdbapi.com/?s=${searchTerm}&page=1&apikey=fc1fef96`
+    const res = await fetch(`${URL}`)
+    const data = await res.json()
+    //console.log(data.Search)
+    if(data.Response == "True") 
+        displayMovieList(data.Search)
+}
+
 function findMovies(){
     let searchTerm = (movieSearchBox.value).trim()
     if(searchTerm.length>0){
@@ -12,15 +21,9 @@ function findMovies(){
     }
 }
 
-function loadMovies(searchTerm){
-    const URL = 'https://omdbapi.com/?s=${searchTerm}&page=1&apikey=fc1fef96'
-    const res = await fetch('${URL}')
-    const data = await res.json()
-    console.log(data)
-}
-
 function displayMovieList(movies){
 
+    //console.log(movies)
     searchList.innerHTML = ""
 
     for(let idx=0; idx<movies.length; idx++){
@@ -31,7 +34,7 @@ function displayMovieList(movies){
         if(movies[idx].Poster != "N/A")
             moviePoster = movies[idx].Poster
         else
-            moviePoster = "assets/image_not_found.jpg"
+            moviePoster = "assets/image_not_found.png"
 
         movieListItem.innerHTML = `
         <div class="search-item-thumbnail">
@@ -55,7 +58,7 @@ function loadMovieDetails(){
 
             searchList.classList.add('hide-search-list')
             movieSearchBox.value =""
-            const result = await fetch('http://www.omdbapi.com/?i=${movie.dataset.id}&apikey=fc1fef96')
+            const result = await fetch(`http://www.omdbapi.com/?i=${movie.dataset.id}&apikey=fc1fef96`)
             const movieDetails = await result.json()
 
             console.log(movieDetails)
@@ -66,10 +69,10 @@ function loadMovieDetails(){
 
 
 function displayMovieDetails(details){
-
+    console.log(details)
     resultGrid.innerHTML = `
     <div class="movie-poster">
-        <img src="${(details.Poster != "N/A") ? details.Poster : "assets/image_not_found.jpg"}" alt="movie poster">
+        <img src="${(details.Poster != "N/A") ? details.Poster : "assets/image_not_found.png"}" alt="movie poster">
     </div>
 
     <div class="movie-info">
